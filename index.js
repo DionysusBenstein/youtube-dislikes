@@ -19,9 +19,15 @@ async function getVideoInfo(videoId) {
 
 async function updateDislikes(videoId) {
     const videoInfo = await getVideoInfo(videoId);
+    const dislikeCount = videoInfo.items[0].statistics.dislikeCount;
     const dislikeButton = document.querySelectorAll('yt-formatted-string#text.ytd-toggle-button-renderer')[1];
 
-    dislikeButton.innerText = videoInfo.items[0].statistics.dislikeCount;
+    if (dislikeCount >= 1000000) {
+        dislikeButton.innerText = `${Math.trunc(dislikeCount / 1000000)}M`;
+    } else if (dislikeCount >= 1000) {
+        dislikeButton.innerText = `${Math.trunc(dislikeCount / 1000)}K`;
+    }
+
     dislikeButton.addEventListener('click', e => {
         // let isDisliked = false;
 
@@ -38,7 +44,6 @@ async function updateDislikes(videoId) {
 
 (function() {
     'use strict';
-    alert(1);
 
     let videoId;
     let temp;
