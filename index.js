@@ -3,8 +3,8 @@
 // @namespace    http://tampermonkey.net/
 // @version      0.1
 // @description  try to take over the world!
-// @author       You
-// @match        https://www.youtube.com/*
+// @author       Benstein
+// @match        *://*.youtube.com/*
 // @grant        none
 // ==/UserScript==
 
@@ -26,36 +26,19 @@ async function updateDislikes(videoId) {
         dislikeButton.innerText = `${Math.trunc(dislikeCount / 1000000)}M`;
     } else if (dislikeCount >= 1000) {
         dislikeButton.innerText = `${Math.trunc(dislikeCount / 1000)}K`;
+    } else {
+        dislikeButton.innerText = dislikeCount;
     }
 
-    dislikeButton.addEventListener('click', e => {
-        // let isDisliked = false;
-
-        // if (isDisliked) {
-        //     e.target.innerText = parseInt(e.target.innerText) + 1;
-        //     isDisliked = true;
-        // } else {
-        //     e.target.innerText = parseInt(e.target.innerText) - 1;
-        // }
-
-        console.log('click');
-    });
+    console.log(dislikeButton);
 }
 
 (function() {
     'use strict';
 
-    let videoId;
-    let temp;
-
-    setInterval(() => {
+    window.addEventListener("yt-navigate-finish", () => {
         if (window.location.href.includes('watch')) {
-            videoId = window.location.href.split('=')[1];
-
-            if (videoId !== temp) {
-                updateDislikes(videoId);
-                temp = videoId;
-            }
+            updateDislikes(window.location.href.split('=')[1]);
         }
-    }, 1000);
+    }, true);
 })();
